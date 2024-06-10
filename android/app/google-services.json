@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1042981930796",
+    "project_id": "tubes-apb-d9086",
+    "storage_bucket": "tubes-apb-d9086.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1042981930796:android:c1b5e2cd5058bef7b38e89",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCw7rDCssZdRFme-Q2Yd8CSFuX8Uk83SYY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
