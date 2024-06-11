@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class NotificationDialog extends StatelessWidget {
   final String message;
 
-  const NotificationDialog({Key? key, required this.message}) : super(key: key);
+  const NotificationDialog({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {

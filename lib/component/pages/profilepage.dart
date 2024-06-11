@@ -9,15 +9,16 @@ import 'package:photo_view/photo_view.dart';
 import 'dart:io';
 import '../../Model/Course.dart';
 import '../../Model/User.dart' as model;
-import '../../Model/Notification.dart' as custom; // Import the custom Notification model
+import '../../Model/Notification.dart' as custom; 
 import 'addcourse.dart';
 import 'loginpage.dart';
 import 'personalinfo.dart';
 import 'coursedetail.dart';
 import 'requestowner.dart';
 import 'updatecourse.dart';
-import 'notificationpage.dart'; // Import Notification Page
-
+import 'notificationpage.dart'; 
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -38,7 +39,6 @@ class _ProfilePageState extends State<ProfilePage> {
     _fetchUserData();
   }
 
-  
   Future<void> _fetchUserData() async {
     await Firebase.initializeApp();
 
@@ -52,9 +52,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
         if (docSnapshot.exists) {
           final userData = model.User.fromMap(docSnapshot.data()!);
-          setState(() {
-            currentUser = userData;
-          });
+          if (mounted) {
+            setState(() {
+              currentUser = userData;
+            });
+          }
           if (currentUser!.role == 'Owner Course') {
             await _fetchOwnedCourses(currentUser!.uid); // Fetch owned courses
             await _fetchNotifications(currentUser!.uid); // Fetch notifications for owner
@@ -62,13 +64,13 @@ class _ProfilePageState extends State<ProfilePage> {
             await _fetchRegisteredCourses(currentUser!.registrants); // Fetch registered courses for student
           }
         } else {
-          print('User document not found');
+          const Text('User document not found');
         }
       } on FirebaseException catch (e) {
-        print('Error fetching user data: $e');
+        Text('Error fetching user data: $e');
       }
     } else {
-      print('No signed-in user found');
+      const Text('No signed-in user found');
     }
   }
 
@@ -84,21 +86,23 @@ class _ProfilePageState extends State<ProfilePage> {
           if (courseDoc.exists) {
             courses.add(Course.fromMap(courseDoc.data()!));
           } else {
-            print('Course document not found for ID: $courseId');
+            Text('Course document not found for ID: $courseId');
           }
         }
       } else {
-        print('User document not found for ID: $ownerId');
+        Text('User document not found for ID: $ownerId');
       }
     } on FirebaseException catch (e) {
-      print('Error fetching owned courses: $e');
+      Text('Error fetching owned courses: $e');
     } catch (e) {
-      print('Unknown error fetching owned courses: $e');
+      Text('Unknown error fetching owned courses: $e');
     }
 
-    setState(() {
-      userCourses = courses;
-    });
+    if (mounted) {
+      setState(() {
+        userCourses = courses;
+      });
+    }
   }
 
   Future<void> _fetchRegisteredCourses(List<String> registrantIds) async {
@@ -115,13 +119,15 @@ class _ProfilePageState extends State<ProfilePage> {
           }
         }
       } on FirebaseException catch (e) {
-        print('Error fetching registered course data: $e');
+        Text('Error fetching registered course data: $e');
       }
     }
 
-    setState(() {
-      userCourses = courses;
-    });
+    if (mounted) {
+      setState(() {
+        userCourses = courses;
+      });
+    }
   }
 
   Future<void> _fetchNotifications(String ownerId) async {
@@ -146,12 +152,14 @@ class _ProfilePageState extends State<ProfilePage> {
         }
       }
     } on FirebaseException catch (e) {
-      print('Error fetching notifications: $e');
+      Text('Error fetching notifications: $e');
     }
 
-    setState(() {
-      notifications = fetchedNotifications;
-    });
+    if (mounted) {
+      setState(() {
+        notifications = fetchedNotifications;
+      });
+    }
   }
 
   Future<void> _changeProfileImage() async {
@@ -171,7 +179,7 @@ class _ProfilePageState extends State<ProfilePage> {
             color: Colors.black,
             child: PhotoView(
               imageProvider: NetworkImage(imageUrl),
-              backgroundDecoration: BoxDecoration(color: Colors.black),
+              backgroundDecoration: const BoxDecoration(color: Colors.black),
             ),
           ),
         );
@@ -259,7 +267,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Container(
                       width: 70,
                       height: 70,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                       ),
                       child: ValueListenableBuilder<File?>(
@@ -298,15 +306,14 @@ class _ProfilePageState extends State<ProfilePage> {
                         currentUser?.username ?? '',
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                       Text(
+                      Text(
                         currentUser?.role ?? '',
-                        style: const TextStyle(fontSize: 12, color: Colors.black54 ,fontWeight: FontWeight.w600),
+                        style: const TextStyle(fontSize: 12, color: Colors.black54, fontWeight: FontWeight.w600),
                       ),
                       Text(
                         currentUser?.email ?? '',
-                        style: const TextStyle(fontSize: 12,color: Colors.black54, fontWeight: FontWeight.w600),
+                        style: const TextStyle(fontSize: 12, color: Colors.black54, fontWeight: FontWeight.w600),
                       ),
-                     
                     ],
                   ),
                 ],
@@ -374,19 +381,19 @@ class _ProfilePageState extends State<ProfilePage> {
                       title: 'Update Course',
                       onTap: () {
                         Get.to(
-                          UpdateCoursePage(),
+                         const UpdateCoursePage(),
                           transition: Transition.native,
                           duration: const Duration(milliseconds: 800),
                         );
                       },
                     ),
-                    if (currentUser?.role == 'Owner Course')
+                  if (currentUser?.role == 'Owner Course')
                     _buildListTile(
                       icon: Icons.delete_forever,
                       title: 'Delete Your Course',
                       onTap: () {
                         Get.to(
-                          DeleteCoursePage(),
+                         const DeleteCoursePage(),
                           transition: Transition.native,
                           duration: const Duration(milliseconds: 800),
                         );
@@ -474,7 +481,7 @@ class _ProfilePageState extends State<ProfilePage> {
               Center(
                 child: Text(
                   course.courseEmail,
-                  style: const TextStyle(fontWeight: FontWeight.w600 ,fontSize: 11.0,color: Colors.black54),
+                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11.0, color: Colors.black54),
                 ),
               ),
             ],
@@ -500,6 +507,12 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Future<void> _signOut() async {
+  await FirebaseAuth.instance.signOut();
+  await GoogleSignIn().signOut();
+}
+
+
   void _showLogoutConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -518,6 +531,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: const Text('Yes'),
               onPressed: () async {
                 Navigator.of(context).pop();
+                await _signOut();
                 Get.offAll(
                   () => const LoginRegisterScreen(),
                   transition: Transition.leftToRight,

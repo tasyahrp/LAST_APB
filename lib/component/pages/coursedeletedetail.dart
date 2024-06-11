@@ -7,7 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 class CourseDeleteDetail extends StatefulWidget {
   final String courseId;
 
-  CourseDeleteDetail({required this.courseId});
+  const CourseDeleteDetail({required this.courseId,super.key});
 
   @override
   CourseDeleteDetailState createState() => CourseDeleteDetailState();
@@ -107,7 +107,7 @@ class CourseDeleteDetailState extends State<CourseDeleteDetail> {
       final ref = FirebaseStorage.instance.refFromURL(course!['course_image_url']);
       await ref.delete();
     } catch (e) {
-      print('Error deleting course image: $e');
+      Text('Error deleting course image: $e');
     }
   }
 

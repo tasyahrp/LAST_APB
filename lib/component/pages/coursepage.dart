@@ -14,13 +14,14 @@ class CoursePage extends StatefulWidget {
   const CoursePage({super.key});
 
   @override
-  _CoursePageState createState() => _CoursePageState();
+  CoursePageState createState() => CoursePageState();
 }
 
-class _CoursePageState extends State<CoursePage> {
+class CoursePageState extends State<CoursePage> {
   List<Course> likedCourses = [];
   List<Course> nearbyCourses = [];
   Position? _currentPosition;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -29,7 +30,10 @@ class _CoursePageState extends State<CoursePage> {
     _getCurrentLocation();
   }
 
-   
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   Future<void> fetchLikedCourses() async {
     try {
@@ -53,15 +57,19 @@ class _CoursePageState extends State<CoursePage> {
       validCourses.sort((a, b) => b.courseRating.compareTo(a.courseRating));
 
       // Take the top 4 courses based on rating
-      setState(() {
-        likedCourses = validCourses.take(4).toList();
-      });
-
-      for (var course in likedCourses) {
-        print('Course: ${course.courseName}, Type: ${course.courseType}');
+      if (mounted) {
+        setState(() {
+          likedCourses = validCourses.take(4).toList();
+        });
       }
     } catch (e) {
-      print('Error fetching courses: $e');
+      Text('Error fetching courses: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -70,15 +78,17 @@ class _CoursePageState extends State<CoursePage> {
     if (status.isGranted) {
       try {
         Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-        setState(() {
-          _currentPosition = position;
-        });
+        if (mounted) {
+          setState(() {
+            _currentPosition = position;
+          });
+        }
         fetchNearbyCourses();
       } catch (e) {
-        print('Error getting location: $e');
+        Text('Error getting location: $e');
       }
     } else {
-      print('Location permission denied');
+      const Text('Location permission denied');
     }
   }
 
@@ -116,11 +126,13 @@ class _CoursePageState extends State<CoursePage> {
         return distanceA.compareTo(distanceB);
       });
 
-      setState(() {
-        nearbyCourses = validCourses;
-      });
+      if (mounted) {
+        setState(() {
+          nearbyCourses = validCourses;
+        });
+      }
     } catch (e) {
-      print('Error fetching nearby courses: $e');
+      Text('Error fetching nearby courses: $e');
     }
   }
 
@@ -139,39 +151,41 @@ class _CoursePageState extends State<CoursePage> {
         ),
         backgroundColor: const Color(0xFF4A1C6F),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildImageCard(
-                context: context,
-                imagePath: 'assets/image/english.png',
-                label: 'Bahasa Inggris',
-                gradientColors: [Colors.pink.shade100, Colors.pink.shade300],
-                imageAlignment: Alignment.bottomRight,
-                navigateTo: const EnglishCoursesPage(),
-                textColor: const Color(0xFF4A1C6F), // Same color as "Yang Mungkin Anda Sukai"
+      body: isLoading
+          ?  const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildImageCard(
+                      context: context,
+                      imagePath: 'assets/image/english.png',
+                      label: 'Bahasa Inggris',
+                      gradientColors: [Colors.pink.shade100, Colors.pink.shade300],
+                      imageAlignment: Alignment.bottomRight,
+                      navigateTo: const EnglishCoursesPage(),
+                      textColor: const Color(0xFF4A1C6F),
+                    ),
+                    const SizedBox(height: 10),
+                    _buildImageCard(
+                      context: context,
+                      imagePath: 'assets/image/programming.png',
+                      label: 'Pemrograman',
+                      gradientColors: [Colors.purple.shade100, Colors.purple.shade300],
+                      imageAlignment: Alignment.bottomLeft,
+                      navigateTo: const ProgrammingCoursesPage(),
+                      textColor: const Color(0xFF4A1C6F),
+                    ),
+                    const SizedBox(height: 20),
+                    RecommendedCourses(likedCourses: likedCourses),
+                    const SizedBox(height: 20),
+                    NearbyCourses(nearbyCourses: nearbyCourses, currentPosition: _currentPosition),
+                  ],
+                ),
               ),
-              const SizedBox(height: 10),
-              _buildImageCard(
-                context: context,
-                imagePath: 'assets/image/programming.png',
-                label: 'Pemrograman',
-                gradientColors: [Colors.purple.shade100, Colors.purple.shade300],
-                imageAlignment: Alignment.bottomLeft,
-                navigateTo: const ProgrammingCoursesPage(),
-                textColor: const Color(0xFF4A1C6F), // Same color as "Yang Mungkin Anda Sukai"
-              ),
-              const SizedBox(height: 20),
-              RecommendedCourses(likedCourses: likedCourses),
-              const SizedBox(height: 20),
-              NearbyCourses(nearbyCourses: nearbyCourses, currentPosition: _currentPosition),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 
@@ -188,7 +202,7 @@ class _CoursePageState extends State<CoursePage> {
       onTap: () {
         Get.to(
           navigateTo,
-          transition: Transition.cupertinoDialog, // Use modern transition
+          transition: Transition.cupertinoDialog,
           duration: const Duration(milliseconds: 800),
         );
       },
@@ -243,7 +257,7 @@ class _CoursePageState extends State<CoursePage> {
 class RecommendedCourses extends StatelessWidget {
   final List<Course> likedCourses;
 
-  const RecommendedCourses({required this.likedCourses, Key? key}) : super(key: key);
+  const RecommendedCourses({required this.likedCourses, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -385,7 +399,7 @@ class NearbyCourses extends StatelessWidget {
   final List<Course> nearbyCourses;
   final Position? currentPosition;
 
-  const NearbyCourses({required this.nearbyCourses, this.currentPosition, Key? key}) : super(key: key);
+  const NearbyCourses({required this.nearbyCourses, this.currentPosition, super.key});
 
   @override
   Widget build(BuildContext context) {

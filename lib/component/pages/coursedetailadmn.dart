@@ -103,12 +103,12 @@ class CourseDetailPageState extends State<CourseAdminDetailPage> {
           privateKey: 'n5Fy5aqlXsBQu7PO314v4',
         ),
       );
-      print('SUCCESS!');
+      const Text('SUCCESS!');
     } catch (error) {
       if (error is EmailJSResponseStatus) {
-        print('ERROR... ${error.status}: ${error.text}');
+        Text('ERROR... ${error.status}: ${error.text}');
       }
-      print(error.toString());
+      Text(error.toString());
     }
   }
 
@@ -123,7 +123,7 @@ class CourseDetailPageState extends State<CourseAdminDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("Course Data2: ${widget.course['schedule']}");
+    Text("Course Data2: ${widget.course['schedule']}");
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

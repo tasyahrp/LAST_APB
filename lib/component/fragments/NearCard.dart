@@ -9,7 +9,7 @@ class NearCard extends StatelessWidget {
   final Course course;
   final Position? currentPosition;
 
-  const NearCard({required this.course, this.currentPosition, Key? key}) : super(key: key);
+  const NearCard({required this.course, this.currentPosition, super.key});
 
   double _calculateDistance(double startLatitude, double startLongitude, double endLatitude, double endLongitude) {
     return Geolocator.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude) / 1000;

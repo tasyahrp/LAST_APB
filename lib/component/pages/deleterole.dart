@@ -157,21 +157,21 @@ class _DeleteRoleState extends State<DeleteRole> {
             final Reference imageRef = FirebaseStorage.instance.refFromURL(courseImageUrl);
             await imageRef.delete();
           } catch (e) {
-            print('Error deleting course image: $e');
+            Text('Error deleting course image: $e');
           }
         }
       }
       // Refresh the list after deletion
       _fetchOwners();
     } catch (e) {
-      print('Error deleting owner: $e');
+      Text('Error deleting owner: $e');
     }
   }
 
   @override
   void initState() {
     super.initState();
-    _fetchOwners(); // Fetch data on widget initialization
+    _fetchOwners(); 
   }
 
   @override
@@ -186,7 +186,7 @@ class _DeleteRoleState extends State<DeleteRole> {
         backgroundColor: const Color(0xFF4A1C6F),
       ),
       body: owners.isEmpty
-          ? Center(
+          ? const Center(
               child: Text(
                 'Tidak ada owner yang terdaftar',
                 style: TextStyle(fontSize: 18.0, color: Colors.grey),

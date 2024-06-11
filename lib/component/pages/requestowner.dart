@@ -374,6 +374,8 @@ class RequestOwnerPageState extends State<RequestOwnerPage> {
           'registrants': FieldValue.delete(),
         }); 
 
+         if (!mounted) return;
+
 
         //  success message
         ScaffoldMessenger.of(context).showSnackBar(

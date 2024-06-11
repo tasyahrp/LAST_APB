@@ -71,7 +71,7 @@ class SearchResultsPageState extends State<SearchResultsPage> {
 
   Widget _buildFilterBox() {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
           const Text(
@@ -187,27 +187,28 @@ class SearchResultsPageState extends State<SearchResultsPage> {
     );
   }
 
-  String _getFormattedOpenDays(List<String> openDays) {
-    if (openDays.isEmpty) return "Closed";
-    List<String> formattedDays = [];
-    String previousDay = "";
-    for (String day in openDays) {
-      if (previousDay.isEmpty) {
-        previousDay = day;
-        formattedDays.add(day);
-      } else if (dayDifference(previousDay, day) == 1) {
-        if (formattedDays.last.contains(" - ")) {
-          formattedDays.last = formattedDays.last.split(" - ")[0] + " - " + day;
-        } else {
-          formattedDays.last += " - " + day;
-        }
-      } else {
-        formattedDays.add(day);
-      }
+ String _getFormattedOpenDays(List<String> openDays) {
+  if (openDays.isEmpty) return "Closed";
+  List<String> formattedDays = [];
+  String previousDay = "";
+  for (String day in openDays) {
+    if (previousDay.isEmpty) {
       previousDay = day;
+      formattedDays.add(day);
+    } else if (dayDifference(previousDay, day) == 1) {
+      if (formattedDays.last.contains(" - ")) {
+        formattedDays.last = "${formattedDays.last.split(" - ")[0]} - $day";
+      } else {
+        formattedDays.last += " - $day";
+      }
+    } else {
+      formattedDays.add(day);
     }
-    return formattedDays.join(", ");
+    previousDay = day;
   }
+  return formattedDays.join(", ");
+}
+
 
   int dayDifference(String start, String end) {
     List<String> days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];

@@ -6,10 +6,10 @@ class SendNotifPage extends StatefulWidget {
   const SendNotifPage({super.key});
 
   @override
-  _SendNotifPageState createState() => _SendNotifPageState();
+  SendNotifPageState createState() => SendNotifPageState();
 }
 
-class _SendNotifPageState extends State<SendNotifPage> {
+class SendNotifPageState extends State<SendNotifPage> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
@@ -134,8 +134,8 @@ class _SendNotifPageState extends State<SendNotifPage> {
         }).toList();
 
         if (filteredCourses.isEmpty) {
-          return Center(
-            child: Text(
+          return const Center(
+            child:  Text(
               'No courses found',
               style: TextStyle(fontSize: 18.0, color: Colors.grey),
             ),

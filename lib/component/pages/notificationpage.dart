@@ -6,7 +6,7 @@ import '../../Model/Notification.dart' as custom; // Use the custom Notification
 class NotificationPage extends StatelessWidget {
   final List<custom.Notification> notifications;
 
-  const NotificationPage({Key? key, required this.notifications}) : super(key: key);
+  const NotificationPage({super.key, required this.notifications});
 
   Future<String> _fetchCourseName(String courseId) async {
     final courseDoc = await FirebaseFirestore.instance.collection('Courses').doc(courseId).get();

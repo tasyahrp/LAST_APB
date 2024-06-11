@@ -29,14 +29,16 @@ class HomepageState extends State<Homepage> {
   String _currentAddress = 'Getting your location';
   List<Course> recommendedCourses = [];
   List<String> courseCategories = [];
-  bool _locationFetched = false;
+  List<Course> buttonCourses = [];
+   bool _locationFetched = false;
 
   @override
   void initState() {
     super.initState();
-    _fetchCourses();
+    _fetchReccomendedCourses();
     _fetchCourseCategories();
     _getCurrentLocation(); 
+    _fetchbuttonCourse(_selectedCategory);
   }
 
   Future<void> _getCurrentLocation() async {
@@ -46,14 +48,18 @@ class HomepageState extends State<Homepage> {
         Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
         _getAddressFromCoordinates(position.latitude, position.longitude);
       } catch (e) {
-        setState(() {
-          _currentAddress = 'Error getting location: $e';
-        });
+        if (mounted) {
+          setState(() {
+            _currentAddress = 'Error getting location: $e';
+          });
+        }
       }
     } else {
-      setState(() {
-        _currentAddress = 'Can\'t find your location';
-      });
+      if (mounted) {
+        setState(() {
+          _currentAddress = 'Can\'t find your location';
+        });
+      }
     }
   }
 
@@ -68,23 +74,28 @@ class HomepageState extends State<Homepage> {
           if (place.country != null) place.country!,
         ].join(', ');
 
-        setState(() {
-          _currentAddress = result.isNotEmpty ? result : 'No address available';
-         // Update that location has been fetched
-        });
+        if (mounted) {
+          setState(() {
+            _currentAddress = result.isNotEmpty ? result : 'No address available';
+          });
+        }
       } else {
-        setState(() {
-          _currentAddress = 'No address found at this location.';
-        });
+        if (mounted) {
+          setState(() {
+            _currentAddress = 'No address found at this location.';
+          });
+        }
       }
     } catch (e) {
-      setState(() {
-        _currentAddress = 'Failed to get address: $e';
-      });
+      if (mounted) {
+        setState(() {
+          _currentAddress = 'Failed to get address: $e';
+        });
+      }
     }
   }
 
-  Future<void> _fetchCourses() async {
+  Future<void> _fetchReccomendedCourses() async {
     try {
       final coursesQuerySnapshot = await FirebaseFirestore.instance.collection('Courses').get();
       List<Course> validCourses = [];
@@ -95,18 +106,51 @@ class HomepageState extends State<Homepage> {
 
         if (ownerDoc.exists && ownerDoc['role'] == 'Owner Course') {
           final course = Course.fromMap(courseDoc.data());
-          if (course.courseRating > 2.4) {
+          if (course.courseRating > 2.5) {
             validCourses.add(course);
           }
         }
       }
 
       validCourses.sort((a, b) => b.courseRating.compareTo(a.courseRating));
-      setState(() {
-        recommendedCourses = validCourses.take(4).toList();
-      });
+      if (mounted) {
+        setState(() {
+          recommendedCourses = validCourses.toList();
+        });
+      }
     } catch (e) {
-      print('Error fetching courses: $e');
+      Text('Error fetching courses: $e');
+    }
+  }
+
+  Future<void> _fetchbuttonCourse(String courseType) async {
+    try {
+      final coursesQuerySnapshot = await FirebaseFirestore.instance
+          .collection('Courses')
+          .where('course_Type', isEqualTo: courseType)
+          .get();
+      List<Course> validCourses = [];
+
+      for (var courseDoc in coursesQuerySnapshot.docs) {
+        final ownerId = courseDoc['ownerId'];
+        final ownerDoc = await FirebaseFirestore.instance.collection('Users').doc(ownerId).get();
+
+        if (ownerDoc.exists && ownerDoc['role'] == 'Owner Course') {
+          final course = Course.fromMap(courseDoc.data());
+          validCourses.add(course);
+        }
+      }
+      // Urutkan kursus berdasarkan courseRating
+      validCourses.sort((a, b) => b.courseRating.compareTo(a.courseRating));
+
+      // Ambil 4 kursus teratas
+      if (mounted) {
+        setState(() {
+          buttonCourses = validCourses.take(4).toList();
+        });
+      }
+    } catch (e) {
+      Text('Error fetching courses: $e');
     }
   }
 
@@ -115,11 +159,13 @@ class HomepageState extends State<Homepage> {
       final results = await FirebaseFirestore.instance.collection('Courses').get();
       final categories = results.docs.map((doc) => doc['course_Type'] as String).toSet().toList();
 
-      setState(() {
-        courseCategories = categories;
-      });
+      if (mounted) {
+        setState(() {
+          courseCategories = categories;
+        });
+      }
     } on FirebaseException catch (e) {
-      print('Error fetching course categories: $e');
+      Text('Error fetching course categories: $e');
     }
   }
 
@@ -143,44 +189,49 @@ class HomepageState extends State<Homepage> {
       validCourses.sort((a, b) => b.courseRating.compareTo(a.courseRating));
       return validCourses;
     } on FirebaseException catch (e) {
-      print('Error fetching courses by category: $e');
+      Text('Error fetching courses by category: $e');
       return [];
     }
   }
 
   void _onTabChange(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (mounted) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   void _onCategorySelected(String category) {
-    setState(() {
-      _selectedCategory = category;
-    });
+    if (mounted) {
+      setState(() {
+        _selectedCategory = category;
+      });
+    }
+    _fetchbuttonCourse(category); 
   }
 
   Future<void> _fetch() async {
     await Firebase.initializeApp();
-    final firebaseUser = await FirebaseAuth.instance.currentUser;
+    final firebaseUser =  FirebaseAuth.instance.currentUser;
     if (firebaseUser != null) {
       try {
         final docSnapshot = await FirebaseFirestore.instance.collection('Users').doc(firebaseUser.uid).get();
         if (docSnapshot.exists) {
           myusername = docSnapshot.data()!['username'];
         } else {
-          print('Username not found in document');
+          const Text('Username not found in document');
         }
       } on FirebaseException catch (e) {
-        print('Error fetching username: $e');
+        Text('Error fetching username: $e');
       }
     } else {
-      print('No signed-in user found');
+      const Text('No signed-in user found');
     }
   }
 
  Future<void> _searchCourses(String query) async {
-  if (query.isEmpty){
+  if (query.isEmpty) {
     Get.dialog(const NotificationDialog(message: 'Please enter a search query.'));
     return;
   }
@@ -189,17 +240,17 @@ class HomepageState extends State<Homepage> {
 
     final results = await FirebaseFirestore.instance.collection('Courses')
         .where('course_name', isGreaterThanOrEqualTo: query)
-        .where('course_name', isLessThanOrEqualTo: query + '\uf8ff')
+        .where('course_name', isLessThanOrEqualTo: '$query\uf8ff')
         .get();
 
     final subdistrictResults = await FirebaseFirestore.instance.collection('Courses')
         .where('course_subdistrict', isGreaterThanOrEqualTo: queryWithPrefix)
-        .where('course_subdistrict', isLessThanOrEqualTo: queryWithPrefix + '\uf8ff')
+        .where('course_subdistrict', isLessThanOrEqualTo: '$queryWithPrefix\uf8ff')
         .get();
 
     final courseTypeResults = await FirebaseFirestore.instance.collection('Courses')
         .where('course_Type', isGreaterThanOrEqualTo: query)
-        .where('course_Type', isLessThanOrEqualTo: query + '\uf8ff')
+        .where('course_Type', isLessThanOrEqualTo: '$query\uf8ff')
         .get();
 
     final allResults = [...results.docs, ...subdistrictResults.docs, ...courseTypeResults.docs].toSet().toList();
@@ -510,18 +561,16 @@ class HomepageState extends State<Homepage> {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center();
         } else {
-          final courses = snapshot.data!;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: courses.map((course) => _buildDetailedCourseCard(course)).toList(),
+            children: buttonCourses.map((course) => _buildDetailedCourseCard(course)).toList(),
           );
         }
       },
     );
   }
+
   Widget _buildDetailedCourseCard(Course course) {
     return GestureDetector(
       onTap: () {
@@ -609,12 +658,12 @@ class HomepageState extends State<Homepage> {
                   ],
                 ),
               ),
-              if (course.courseRating > 3.0)
+              if (course.courseRating > 2.5)
                 Positioned(
                   top: 0,
                   right: 0,
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                     decoration: const BoxDecoration(
                       color: Color.fromARGB(255, 68, 24, 104),
                       borderRadius: BorderRadius.only(

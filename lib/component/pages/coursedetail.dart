@@ -251,20 +251,19 @@ Future<void> fetchComments(String courseId) async {
 Future<void> _submitComment(String commentText, double ratingValue) async {
   final firebaseUser = FirebaseAuth.instance.currentUser;
   if (firebaseUser != null) {
-    // Check if the comment text exceeds 20 characters
-    if (commentText.length > 50) {
-      _showCommentTooLongAlert();
-      return;
+    // Jika Input melebihi 20 characters
+    if (commentText.length > 20) {
+      return; // Hentikan eksekusi fungsi jika komentar terlalu panjang
     }
 
     try {
-      // Show loading indicator
+      // loading indicator
       showDialog(
         context: context,
-        barrierDismissible: false, // Prevent dismissing the dialog by tapping outside
+        barrierDismissible: false, 
         builder: (BuildContext context) {
-           return AlertDialog(
-            content:   Row(
+           return const AlertDialog(
+            content: Row(
               children: [
                 CircularProgressIndicator(),
                 SizedBox(width: 16),
@@ -299,7 +298,7 @@ Future<void> _submitComment(String commentText, double ratingValue) async {
         }
       });
 
-      // Update the 'Courses' collection by adding the comment ID to the 'comments' array and updating the rating
+      // Update  koleksi 'Courses'  by adding the comment ID to the 'comments' array and updating the rating
       final courseDocRef = FirebaseFirestore.instance.collection('Courses').doc(widget.course.courseId);
       await FirebaseFirestore.instance.runTransaction((transaction) async {
         final courseDoc = await transaction.get(courseDocRef);
@@ -308,22 +307,22 @@ Future<void> _submitComment(String commentText, double ratingValue) async {
           commentsList.add(commentId);
           transaction.update(courseDocRef, {'comments': commentsList});
 
-          // Update the course rating based on the new conditions
+          // logika Update the course rating 
           double currentRating = courseDoc.data()!['course_rating'] ?? 0.0;
           if (currentRating >= 5.0) {
-            currentRating -= 0.2; // Decrease rating by 0.2 if it's equal to or greater than 5.0
+            currentRating -= 0.2; 
           } else {
-            currentRating += 0.1; // Increase rating by 0.1 if it's less than 5.0
+            currentRating += 0.1; 
           }
-          currentRating = double.parse(currentRating.toStringAsFixed(1)); // Round to one decimal place
+          currentRating = double.parse(currentRating.toStringAsFixed(1)); // Coma 1
           transaction.update(courseDocRef, {'course_rating': currentRating});
         }
       });
 
-      // Hide the loading indicator
+      
       Navigator.pop(context);
 
-      // Show success alert
+      // success alert
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -368,32 +367,8 @@ Future<void> _submitComment(String commentText, double ratingValue) async {
   }
 }
 
-Future<void> _showCommentTooLongAlert() async {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Error'),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Text('Your comment should not exceed 20 characters.'),
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text('OK'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
+
+
 
   @override
   Widget build(BuildContext context) {

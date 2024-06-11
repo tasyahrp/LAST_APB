@@ -205,43 +205,48 @@ class SignUpScreen extends StatelessWidget {
   }
 
   Future<void> signUp(BuildContext context) async {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
+  try {
+    UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: emailController.text,
+      password: passwordController.text,
+    );
 
-      // Get the current user's ID
-      String uid = userCredential.user!.uid;
+    // Get the current user's ID
+    String uid = userCredential.user!.uid;
 
-      // Get the reference to the "Users" collection in Firestore
-      CollectionReference usersCollection = FirebaseFirestore.instance.collection('Users');
+    // Get the reference to the "Users" collection in Firestore
+    CollectionReference usersCollection = FirebaseFirestore.instance.collection('Users');
 
-      // Create a new document for the user with their information
-      await usersCollection.doc(uid).set({
-        'uid': uid,
-        'email': emailController.text,
-        'password': passwordController.text, // Remember to securely hash the password before storing it
-        'username': fullnameController.text,
-        'phone_number': phonenumber.text,
-        'isRequestOwner': false,
-        'role': 'Student',
-      });
+    // Create a new document for the user with their information
+    await usersCollection.doc(uid).set({
+      'uid': uid,
+      'email': emailController.text,
+      'password': passwordController.text, // Remember to securely hash the password before storing it
+      'username': fullnameController.text,
+      'phone_number': phonenumber.text,
+      'isRequestOwner': false,
+      'role': 'Student',
+    });
 
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Successfully signed up!')));
-      Navigator.of(context).pop(); // Optionally navigate to another page
-    } on FirebaseAuthException catch (e) {
-      String message;
-      if (e.code == 'weak-password') {
-        message = 'The password provided is too weak.';
-      } else if (e.code == 'email-already-in-use') {
-        message = 'The account already exists for that email.';
-      } else {
-        message = e.message ?? 'An error occurred';
-      }
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('An error occurred')));
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Successfully signed up!')));
+    Navigator.of(context).pop(); // Optionally navigate to another page
+  } on FirebaseAuthException catch (e) {
+    String message;
+    if (e.code == 'weak-password') {
+      message = 'The password provided is too weak.';
+    } else if (e.code == 'email-already-in-use') {
+      message = 'The account already exists for that email.';
+    } else {
+      message = e.message ?? 'An error occurred';
     }
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  } catch (e) {
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('An error occurred')));
   }
+}
+
 }

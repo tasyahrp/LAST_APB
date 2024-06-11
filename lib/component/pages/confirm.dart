@@ -144,7 +144,7 @@ class _ConfirmState extends State<Confirm> {
         backgroundColor: const Color(0xFF4A1C6F),
       ),
       body: applicants.isEmpty
-          ? Center(
+          ? const Center(
               child: Text(
                 'Tidak ada user yang mendaftar',
                 style: TextStyle(fontSize: 18.0, color: Colors.grey),

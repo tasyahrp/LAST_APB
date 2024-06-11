@@ -49,13 +49,13 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
             _role = userData['role'] as String? ?? '';
           });
         } else {
-          print('User document not found');
+         const  Text('User document not found');
         }
       } on FirebaseException catch (e) {
-        print('Error fetching user data: $e');
+        Text('Error fetching user data: $e');
       }
     } else {
-      print('No signed-in user found');
+      const Text('No signed-in user found');
     }
   }
 

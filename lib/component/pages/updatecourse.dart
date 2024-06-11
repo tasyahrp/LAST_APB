@@ -6,11 +6,12 @@ import 'updateformpage.dart';
 import '../../Model/Syllabus.dart';
 
 class UpdateCoursePage extends StatefulWidget {
+  const UpdateCoursePage({super.key});
   @override
-  _UpdateCoursePageState createState() => _UpdateCoursePageState();
+  UpdateCoursePageState createState() => UpdateCoursePageState();
 }
 
-class _UpdateCoursePageState extends State<UpdateCoursePage> {
+class UpdateCoursePageState extends State<UpdateCoursePage> {
   List<Map<String, dynamic>> userCourses = [];
 
   @override

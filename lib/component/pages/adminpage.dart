@@ -180,7 +180,7 @@ class ManagementCard extends StatelessWidget {
             children: [
               Image.asset(iconPath, height: 50), // Displaying icon image
               const SizedBox(height: 10),
-              Text(label, textAlign: TextAlign.center,style: TextStyle(fontWeight:FontWeight.w600),),
+              Text(label, textAlign: TextAlign.center,style: const TextStyle(fontWeight:FontWeight.w600),),
             ],
           ),
         ),

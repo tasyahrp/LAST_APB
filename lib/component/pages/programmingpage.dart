@@ -7,10 +7,10 @@ class ProgrammingCoursesPage extends StatefulWidget {
   const ProgrammingCoursesPage({super.key});
 
   @override
-  _ProgrammingCoursesPageState createState() => _ProgrammingCoursesPageState();
+  ProgrammingCoursesPageState createState() => ProgrammingCoursesPageState();
 }
 
-class _ProgrammingCoursesPageState extends State<ProgrammingCoursesPage> {
+class ProgrammingCoursesPageState extends State<ProgrammingCoursesPage> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 

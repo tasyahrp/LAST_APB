@@ -13,7 +13,7 @@ import 'package:geocoding/geocoding.dart';
 class CourseUpdateFormPage extends StatelessWidget {
   final String courseId;
 
-  CourseUpdateFormPage({required this.courseId});
+  const CourseUpdateFormPage({required this.courseId,super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class CourseUpdateFormPage extends StatelessWidget {
 class CourseUpdateForm extends StatefulWidget {
   final Course course;
 
-  CourseUpdateForm({required this.course});
+  const CourseUpdateForm({required this.course, super.key});
 
   @override
   CourseUpdateFormState createState() => CourseUpdateFormState();
@@ -140,7 +140,7 @@ class CourseUpdateFormState extends State<CourseUpdateForm> {
         });
       }
     } catch (e) {
-      print('Error getting location: $e');
+      Text('Error getting location: $e');
     }
   }
 
@@ -246,12 +246,12 @@ class CourseUpdateFormState extends State<CourseUpdateForm> {
           _oldImageUrl = downloadUrl;
         });
 
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Image updated successfully')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Image updated successfully')));
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to update image: $e')));
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No image selected')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No image selected')));
     }
   }
 
@@ -344,7 +344,7 @@ class CourseUpdateFormState extends State<CourseUpdateForm> {
             ),
           ),
           IconButton(
-            icon: Icon(Icons.my_location),
+            icon: const Icon(Icons.my_location),
             onPressed: () {
               onPressed();
               setState(() {
@@ -369,7 +369,7 @@ class CourseUpdateFormState extends State<CourseUpdateForm> {
           DottedBorder(
             color: _selectedImage != null ? Colors.green : Colors.grey,
             strokeWidth: _selectedImage != null ? 2 : 1,
-            dashPattern: [8, 4],
+            dashPattern: const [8, 4],
             child: Container(
               height: 200,
               width: double.infinity,
@@ -423,7 +423,7 @@ class CourseUpdateFormState extends State<CourseUpdateForm> {
         const SizedBox(height: 10),
         ListView.builder(
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           itemCount: _syllabi.length,
           itemBuilder: (context, index) {
             final syllabus = _syllabi[index];

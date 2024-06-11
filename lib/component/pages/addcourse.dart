@@ -13,10 +13,10 @@ class AddCourse extends StatefulWidget {
   const AddCourse({super.key});
 
   @override
-  _AddCourseState createState() => _AddCourseState();
+  AddCourseState createState() => AddCourseState();
 }
 
-class _AddCourseState extends State<AddCourse> {
+class AddCourseState extends State<AddCourse> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();

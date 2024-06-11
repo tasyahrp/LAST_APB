@@ -4,11 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_1/component/pages/coursedeletedetail.dart';
 
 class DeleteCoursePage extends StatefulWidget {
+  const DeleteCoursePage ({super.key});
   @override
-  _DeleteCoursePageState createState() => _DeleteCoursePageState();
+  DeleteCoursePageState createState() => DeleteCoursePageState();
 }
 
-class _DeleteCoursePageState extends State<DeleteCoursePage> {
+class DeleteCoursePageState extends State<DeleteCoursePage> {
   List<Map<String, dynamic>> userCourses = [];
 
   @override

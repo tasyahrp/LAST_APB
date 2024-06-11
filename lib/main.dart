@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'component/pages/loginpage.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -19,20 +18,20 @@ class EduLocalApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'Poppins', // Set default font to Poppins
-        textTheme: TextTheme(
-          headline1: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w300),
-          headline2: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w300),
-          headline3: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
-          headline4: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
-          headline5: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
-          headline6: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w500),
-          subtitle1: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
-          subtitle2: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w500),
-          bodyText1: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
-          bodyText2: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
-          button: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w500),
-          caption: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
-          overline: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w300),
+          displayMedium: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w300),
+          displaySmall: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
+          headlineMedium: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
+          headlineSmall: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
+          titleLarge: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w500),
+          titleMedium: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
+          titleSmall: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w500),
+          bodyLarge: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
+          bodyMedium: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
+          labelLarge: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w500),
+          bodySmall: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
+          labelSmall: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w400),
         ),
       ),
       home: const WelcomeScreen(),
@@ -40,12 +39,11 @@ class EduLocalApp extends StatelessWidget {
   }
 }
 
-
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
   void navigateToLogin() {
-    Get.to(() => const LoginRegisterScreen(), transition: Transition.rightToLeft, duration: Duration(milliseconds: 500));
+    Get.to(() => const LoginRegisterScreen(), transition: Transition.rightToLeft, duration: const Duration(milliseconds: 500));
   }
 
   @override
