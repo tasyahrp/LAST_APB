@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_application_1/component/fragments/notificationdialog.dart';
 import 'package:get/get.dart'; // Import Get package
 import 'package:flutter_application_1/component/fragments/google_navbar.dart';
 import 'package:flutter_application_1/component/pages/coursepage.dart';
@@ -179,6 +180,10 @@ class HomepageState extends State<Homepage> {
   }
 
  Future<void> _searchCourses(String query) async {
+  if (query.isEmpty){
+    Get.dialog(const NotificationDialog(message: 'Please enter a search query.'));
+    return;
+  }
   try {
     final queryWithPrefix = 'Kecamatan $query';
 

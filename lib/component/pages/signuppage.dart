@@ -158,30 +158,6 @@ class SignUpScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        const Text(
-                          'Or',
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 10),
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton.icon(
-                            onPressed: () async {
-                              // await signUpWithGoogle(context);
-                            },
-                            icon: Image.asset('assets/image/google.png', height: 24), // Update this to your Google icon path
-                            label: const Text('Sign Up with Google', style: TextStyle(color: Colors.white),),
-                            style: OutlinedButton.styleFrom(
-                              side:  const BorderSide(color: Colors.white),
-                              backgroundColor: const Color.fromARGB(0, 255, 255, 255),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
                         Center(
                           child: RichText(
                             text: TextSpan(

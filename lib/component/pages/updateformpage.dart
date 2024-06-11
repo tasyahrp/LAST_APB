@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_1/component/pages/homepage.dart';
-import 'package:flutter_application_1/component/pages/updatecourse.dart';
 import '../../Model/Syllabus.dart';
 import '../../Model/Course.dart';
 import 'package:image_picker/image_picker.dart';

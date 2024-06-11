@@ -9,10 +9,10 @@ class SearchResultsPage extends StatefulWidget {
   const SearchResultsPage({required this.query, required this.searchResults, super.key});
 
   @override
-  _SearchResultsPageState createState() => _SearchResultsPageState();
+  SearchResultsPageState createState() => SearchResultsPageState();
 }
 
-class _SearchResultsPageState extends State<SearchResultsPage> {
+class SearchResultsPageState extends State<SearchResultsPage> {
   String _selectedCourseType = 'All';
   List<Course> _filteredResults = [];
 
